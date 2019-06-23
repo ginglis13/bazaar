@@ -5,6 +5,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 class checkButton(Gtk.CheckButton):
-    def __init__(self, label, value):
+    def __init__(self, label, value, pkgsource=''):
         Gtk.CheckButton.__init__(self, label=label)
-        self.value = value
+        self.value     = value
+        self.pkgsource = pkgsource

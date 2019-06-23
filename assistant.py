@@ -68,8 +68,8 @@ class myAssistant(Gtk.Assistant):
         nd.set_orientation(Gtk.Orientation.VERTICAL)
         nd.add(label)
 
-        print_driver = checkButton('ND Print Driver', 'ndprint')
-        eduroam_driver = checkButton('Eduroam Driver', 'eduroam')
+        print_driver = checkButton('ND Print Driver', 'ndprint', 'nd')
+        eduroam_driver = checkButton('Eduroam Driver', 'eduroam','nd')
 
         self.add_to_widget(nd, [print_driver, eduroam_driver])
 
@@ -86,39 +86,40 @@ class myAssistant(Gtk.Assistant):
 
         # Coding
         coding   = Gtk.Label('Text Editors')
-        vscodium = checkButton('VSCodium', 'vscodium')
-        vscode   = checkButton('Visual Studio Code', 'vscode')
-        atom     = checkButton('Atom', 'atom')
-        sublime  = checkButton('Sublime Text', 'sublime-text')
+        vim      = checkButton('vim', 'vim', 'apt')
+        vscodium = checkButton('VSCodium', 'vscodium', 'snap')
+        vscode   = checkButton('Visual Studio Code', 'vscode --classic', 'snap')
+        atom     = checkButton('Atom', 'atom --classic', 'snap')
+        sublime  = checkButton('Sublime Text', 'sublime-text --classic', 'snap')
 
         self.add_to_widget(utils, [coding, vscodium, vscode, sublime])
 
         # Web Browsers
         browsers = Gtk.Label('Web Broswers')
-        chromium = checkButton('Chromium', 'chromium')
-        chrome   = checkButton('Chrome', 'chrome')
-        firefox  = checkButton('Firefox', 'firefox')
+        chromium = checkButton('Chromium', 'chromium', 'snap')
+        chrome   = checkButton('Chrome', 'chrome', 'ppa')
+        firefox  = checkButton('Firefox', 'firefox', 'snap')
 
         self.add_to_widget(utils, [browsers, chromium, chrome, firefox])
 
         # Gaming
         gaming  = Gtk.Label('Gaming')
-        steam   = checkButton('Steam', 'steam')
-        lutris  = checkButton('Lutris', 'eduroam')
-        discord = checkButton('Discord', 'discord')
+        steam   = checkButton('Steam', 'steam', 'apt')
+        lutris  = checkButton('Lutris', 'lutris', 'ppa')
+        discord = checkButton('Discord', 'discord', 'snap')
 
         self.add_to_widget(utils,[gaming,steam,lutris,discord])
 
         # Chat
         chat     = Gtk.Label('Chat Applications')
-        slack    = checkButton('Slack', 'slack')
+        slack    = checkButton('Slack', 'slack --classic', 'snap')
         whatsapp = checkButton('WhatsApp', 'whatsapp')
-        telegram = checkButton('Telegram', 'telegram')
-        signal   = checkButton('Signal', 'signal')
+        telegram = checkButton('Telegram', 'telegram-desktop', 'snap')
+        signal   = checkButton('Signal', 'signal-desktop', 'snap')
 
         self.add_to_widget(utils,[chat, slack, whatsapp, telegram, signal])
 
-        spotify  = checkButton('Spotify', 'spotify')
+        spotify  = checkButton('Spotify', 'spotify', 'snap')
 
         return utils
 
@@ -143,12 +144,14 @@ class myAssistant(Gtk.Assistant):
             widget.add(w)
 
     def install(self, widget):
+        p = self.get_nth_page(-1)
         for i in self.software:
             if isinstance(i, Gtk.CheckButton) and i.get_active():
                 print('Installing {}...'.format(i.value))
                 label = Gtk.Label('Installing {}...'.format(i.value))
-                self.add(label)
-                subprocess.call('gksudo', 'apt-install {}'.format(i.value))
+                p.add(label)
+                p.show_all()
+                subprocess.Popen([i.pkgsource, 'install', 'i.value'])
 
     def close(self, widget):
         Gtk.main_quit()
