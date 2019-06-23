@@ -3,6 +3,7 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import subprocess
 from checkbutton import checkButton
 
 class myAssistant(Gtk.Assistant):
@@ -129,7 +130,10 @@ class myAssistant(Gtk.Assistant):
         summary = Gtk.Box(spacing = 6)
         summary.set_orientation(Gtk.Orientation.VERTICAL)
         summary.add(label)
-        self.install(summary)
+
+        button = Gtk.Button(label="Install")
+        button.connect("clicked", self.install)
+        self.add_action_widget(button)
 
         return summary
 
@@ -140,10 +144,11 @@ class myAssistant(Gtk.Assistant):
 
     def install(self, widget):
         for i in self.software:
-            if isinstance(widget, Gtk.CheckButton) and widget.get_active():
-                label = Gtk.Label('Installing {}...'.format(i))
+            if isinstance(i, Gtk.CheckButton) and i.get_active():
+                print('Installing {}...'.format(i.value))
+                label = Gtk.Label('Installing {}...'.format(i.value))
                 self.add(label)
-                print('Installing {}...'.format(i))
+                subprocess.call('gksudo', 'apt-install {}'.format(i.value))
 
     def close(self, widget):
         Gtk.main_quit()
