@@ -151,7 +151,7 @@ class myAssistant(Gtk.Assistant):
                 label = Gtk.Label('Installing {}...'.format(i.value))
                 p.add(label)
                 p.show_all()
-                subprocess.Popen([i.pkgsource, 'install', 'i.value'])
+                subprocess.Popen([i.pkgsource, 'install', i.value])
 
     def close(self, widget):
         Gtk.main_quit()
