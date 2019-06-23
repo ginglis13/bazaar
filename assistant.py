@@ -12,6 +12,9 @@ class myAssistant(Gtk.Assistant):
         self.set_default_size(800,600)
 
         self.software = set()
+        self.apt = set()
+        self.snap = set()
+        self.snap_classic = set()
 
         intro = self.init_intro()
         nd = self.init_nd()
@@ -140,18 +143,26 @@ class myAssistant(Gtk.Assistant):
 
     def add_to_widget(self, widget, widges):
         for w in widges:
-            self.software.add(w)
-            widget.add(w)
+            if isinstance(w, Gtk.CheckButton):
+                if w.value == 'apt':
+                    self.apt.add(w)
+                if w.value == 'snap':
+                    self.snap.add(w)
+                if w.value == 'snap --classic':
+                    self.apt.add(w)
+                #self.software.add(w)
+                widget.add(w)
 
     def install(self, widget):
         p = self.get_nth_page(-1)
-        for i in self.software:
-            if isinstance(i, Gtk.CheckButton) and i.get_active():
-                print('Installing {}...'.format(i.value))
-                label = Gtk.Label('Installing {}...'.format(i.value))
-                p.add(label)
-                p.show_all()
-                subprocess.Popen([i.pkgsource, 'install', i.value])
+        subprocess.Popen(['apt', 'install', self.apt])
+        subprocess.Popen(['snap', 'install', self.snap])
+        subprocess.Popen(['snap', 'install', '--classic',self.snap_classic])
+
+        #print('Installing {}...'.format(i.value))
+        #label = Gtk.Label('Installing {}...'.format(i.value))
+        #p.add(label)
+        #p.show_all()
 
     def close(self, widget):
         Gtk.main_quit()
